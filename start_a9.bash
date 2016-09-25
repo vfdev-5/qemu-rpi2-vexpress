@@ -40,7 +40,8 @@ fi
 
 CURRENT_PATH="$(pwd "$0")"
 KERNEL_PATH="kernel-qemu-4.4.1-vexpress"
-DTB_PATH="vexpress-v2p-ca15_a7.dtb"
+DTB_PATH="vexpress-v2p-ca9.dtb"
+#DTB_PATH="vexpress-v2p-ca15_a7.dtb"
 
 if [ -n "$1" ]; then
 
@@ -61,9 +62,11 @@ if [ -n "$1" ]; then
       
     # Start QEMU    
     if [ "$is_verbose" == 1 ]; then
-        sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -serial stdio -append "root=/dev/mmcblk0p2 rw rootfstype=ext4 console=ttyAMA0,15200 loglevel=8"
+        sudo qemu-system-arm -m 1024M -M vexpress-a9 -cpu cortex-a9 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -serial stdio -append "root=/dev/mmcblk0p2 rw rootfstype=ext4 console=ttyAMA0,15200 loglevel=8"
+        #sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -serial stdio -append "root=/dev/mmcblk0p2 rw rootfstype=ext4 console=ttyAMA0,15200 loglevel=8"
     else
-        sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -append "root=/dev/mmcblk0p2 rw rootfstype=ext4"
+        sudo qemu-system-arm -m 1024M -M vexpress-a9 -cpu cortex-a9 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -append "root=/dev/mmcblk0p2 rw rootfstype=ext4"
+        #udo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -append "root=/dev/mmcblk0p2 rw rootfstype=ext4"
 
     fi
 
