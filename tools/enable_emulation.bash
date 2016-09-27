@@ -62,7 +62,7 @@ function mount_input(){
             sudo mount -o loop,offset=$((512*$_offset)) $_input_path $MOUNT_PATH
             if [ "$?" != "0" ]; then handle_error "Failed to mount image file"; fi 
             # write the output variable:
-            eval $__need_unmount="'1'"           
+            eval $__need_unmount="'1'"
         else
             # mounted -> setup MOUNT_PATH            
             MOUNT_PATH=$_ret
@@ -86,7 +86,7 @@ function umount_input(){
     local _input_path=$1
     echo "- Unmount path : '$_input_path'"
 
-    sudo umount $_input_path
+    sudo umount -l $_input_path
     if [ "$?" != "0" ]; then handle_error "Failed to unmount the folder s'$_input_path'"; fi                 
     remove_mount_path $_input_path    
 }
@@ -156,7 +156,7 @@ function enable_emulation(){
         fi
     fi
         
-    if [ "$_need_unmount" == 1 ]; then 
+    if [ "$_need_unmount" == "1" ]; then 
         umount_input $MOUNT_PATH    
     fi
 }
@@ -174,8 +174,6 @@ if [ $# -ne 2 ]; then
 fi 
 
 MOUNT_PATH="_mnt"
-remove_mount_path $MOUNT_PATH
-
 INPUT_PATH=$1
 VALUE=$2
 
