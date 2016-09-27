@@ -77,11 +77,9 @@ if [ -n "$1" ]; then
       
     # Start QEMU    
     if [ "$is_verbose" == 1 ]; then
-        #sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -serial stdio -append "root=/dev/mmcblk0p2 rw rootfstype=ext4 console=ttyAMA0,15200 loglevel=8"
-        xterm
+        sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -serial stdio -append "root=/dev/mmcblk0p2 rw rootfstype=ext4 console=ttyAMA0,15200 loglevel=8"
     else
-        #sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -append "root=/dev/mmcblk0p2 rw rootfstype=ext4"
-        xterm
+        sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel $KERNEL_PATH -no-reboot -dtb $DTB_PATH -sd $input_path -append "root=/dev/mmcblk0p2 rw rootfstype=ext4"
     fi
 
     
