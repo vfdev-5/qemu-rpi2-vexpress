@@ -22,11 +22,8 @@ sudo apt-get install qemu
 - in terminal start command :
 
 ```
-bash start.bash /dev/sdb [--verbose]
+bash start.bash /dev/sdb [--no-verbose]
 ```
-
-**Be careful. Keys as `Ctrl+C` is not forwared to the QEMU emulator.**
-
 
 ### Image modifications for QEMU:
 
@@ -54,9 +51,19 @@ The command to launch QEMU emulator on `/dev/sdb` is
 sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel kernel-qemu-4.4.1-vexpress -no-reboot -dtb vexpress-v2p-ca15_a7.dtb -sd /dev/sdb -append "root=/dev/mmcblk0p2 rw rootfstype=ext4"
 ```
 
+#### Linux kernel 4.4.1 and DTB
+
+Linux kernel used with QEMU is a custom build of [Linux 4.4.1](link) configured ....
 
 
-### How to compile linux kernel
+
+
+
+
+
+
+
+ 
 
 
 
