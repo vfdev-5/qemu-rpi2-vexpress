@@ -44,32 +44,33 @@ function remove_mount_path(){
 
 function mount_input(){
     local _input_path=$1
-    local __need_unmount=$2
-    
-    echo "- Mount path : '$_input_path'"
+   
+    echo "- Device path : '$_input_path'"
     
     # Check if input is a device (not a .img file)
     if [ "${_input_path:0:5}" == "/dev/" ]; then         
+        
         # sd card
         echo "Input is a SD card"
-        # check if mounted :
-        local _ret=`mount | grep -wE $_input_path | awk '{ print $3 }'`
-        echo "SD is mounted on  $_ret"
-        if [ "$_ret" == "" ]; then
-            # not mounted -> mount
-            mkdir $MOUNT_PATH
-            local _offset="$(sudo fdisk -l $_input_path | grep -o -i -P $_input_path'2\s+[0-9]+[^0-9]' | sed -r -e 's/'${_input_path//\//\\/}'2 +//g')"            
-            sudo mount -o loop,offset=$((512*$_offset)) $_input_path $MOUNT_PATH
-            if [ "$?" != "0" ]; then handle_error "Failed to mount image file"; fi 
-            # write the output variable:
-            eval $__need_unmount="'1'"
-        else
-            # mounted -> setup MOUNT_PATH            
-            MOUNT_PATH=$_ret
-            if [ "$MOUNT_PATH" == "" ]; then handle_error "SD card is mounted, but path is empty"; fi
-            # write the output variable:
-            eval $__need_unmount="'0'"
+        # check if partition /dev/sdX2 is mounted :
+        local _ret=`mount | grep -wE ${_input_path}2 | awk '{ print $3 }'`
+
+        if [ "$_ret" != "" ]; then
+            echo "Currently SD is mounted on '$_ret'"
+            # Unmount current location and remount in mine 
+            sudo umount -l ${_input_path}2
+            if [ "$?" != "0" ]; then handle_error "Failed to unmount the folder s'${_input_path}2'"; fi
         fi
+       
+        remove_mount_path $MOUNT_PATH
+        mkdir $MOUNT_PATH
+
+        # not mounted -> mount
+        local _offset="$(sudo fdisk -l $_input_path | grep -o -i -P $_input_path'2\s+[0-9]+[^0-9]' | sed -r -e 's/'${_input_path//\//\\/}'2 +//g')"
+        if [ "$?" == "" ]; then handle_error "Failed to find out the offset"; fi          
+        sudo mount -o loop,offset=$((512*$_offset)) $_input_path $MOUNT_PATH
+        if [ "$?" != "0" ]; then handle_error "Failed to mount image file"; fi 
+    
     else
 
         mkdir $MOUNT_PATH
@@ -77,8 +78,6 @@ function mount_input(){
     	local _offset="$(sudo fdisk -l $_input_path | grep -o -i -P 'img2\s+[0-9]+[^0-9]' | sed -r -e 's/img2 +//g')"
         sudo mount -o loop,offset=$((512*$_offset)) $_input_path $MOUNT_PATH
         if [ "$?" != "0" ]; then handle_error "Failed to mount image file"; fi         
-        # write the output variable:
-        eval $__need_unmount="'1'"
     fi
 }
 
@@ -95,7 +94,7 @@ function enable_emulation(){
     local _input_path=$1
     local _value=$2
             
-    mount_input $_input_path _need_unmount
+    mount_input $_input_path
                          
     if [ "$_value" == "1" ]; then
     
@@ -111,7 +110,8 @@ function enable_emulation(){
                 echo " - Replace $MOUNT_PATH/etc/ld.so.preload > $MOUNT_PATH/etc/ld.so.preload.original"
                 echo ""
                 sudo cp $MOUNT_PATH/etc/ld.so.preload $MOUNT_PATH/etc/ld.so.preload.original
-                sudo sed -i 's/^/#/g' $MOUNT_PATH/etc/ld.so.preload    
+                # Check if the line to comment exists : /usr/lib/arm-*/libarmmem.so                  
+                sudo sed -i '/\/usr\/lib\/arm-.*\/libarmmem.so/ s/^/#/' $MOUNT_PATH/etc/ld.so.preload
             fi
         fi
 
@@ -135,7 +135,6 @@ function enable_emulation(){
 
         if [ ! -f "$MOUNT_PATH/etc/ld.so.preload.original" ]; then
             echo "- System is already in its original state"
-            #handle_error "File $MOUNT_PATH/etc/ld.so.preload.original does not exists"
         else
             echo ""
             echo " - Replace $MOUNT_PATH/etc/ld.so.preload.original > $MOUNT_PATH/etc/ld.so.preload"
@@ -146,7 +145,6 @@ function enable_emulation(){
            
         if [ ! -f "$MOUNT_PATH/etc/fstab.original" ]; then
             echo "-- System is already in its original state"
-            #handle_error "File /etc/fstab.original does not exists"    
         else        
             echo ""
             echo " - Replace $MOUNT_PATH/etc/fstab.original > $MOUNT_PATH/etc/fstab"
@@ -156,9 +154,7 @@ function enable_emulation(){
         fi
     fi
         
-    if [ "$_need_unmount" == "1" ]; then 
-        umount_input $MOUNT_PATH    
-    fi
+    umount_input $MOUNT_PATH    
 }
 
 
