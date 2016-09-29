@@ -53,7 +53,22 @@ sudo qemu-system-arm -m 2048M -M vexpress-a15 -cpu cortex-a15 -kernel kernel-qem
 
 #### Linux kernel 4.4.1 and DTB
 
-Linux kernel used with QEMU is a custom build of [Linux 4.4.1](link) configured ....
+Linux kernel used with QEMU is a build of [Linux 4.4.1](https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.4.1.tar.xz) configured on `vexpress` :
+
+```
+
+$ cd linux-4.4.1
+$ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- vexpress_defconfig
+$ cat >> .config << EOF
+    CONFIG_FHANDLE=y
+    CONFIG_LBDAF=y
+    EOF
+$ make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- all
+...
+$ cp arch/arm/boot/zImage ../kernel-qemu-4.4.1-vexpress
+$ cp arch/arm/boot/dts/vexpress-*.dtb ../
+
+```
 
 
 

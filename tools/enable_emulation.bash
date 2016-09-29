@@ -67,7 +67,7 @@ function mount_input(){
 
         # not mounted -> mount
         local _offset="$(sudo fdisk -l $_input_path | grep -o -i -P $_input_path'2\s+[0-9]+[^0-9]' | sed -r -e 's/'${_input_path//\//\\/}'2 +//g')"
-        if [ "$?" == "" ]; then handle_error "Failed to find out the offset"; fi          
+        if [ "$_offset" == "" ]; then handle_error "Failed to find out the offset"; fi          
         sudo mount -o loop,offset=$((512*$_offset)) $_input_path $MOUNT_PATH
         if [ "$?" != "0" ]; then handle_error "Failed to mount image file"; fi 
     
@@ -101,6 +101,7 @@ function enable_emulation(){
         echo "- Enable emulation on '$_input_path' with value=$_value"
     
         if [ ! -f "$MOUNT_PATH/etc/ld.so.preload" ]; then
+            umount_input $MOUNT_PATH 
             handle_error "File $MOUNT_PATH/etc/ld.so.preload does not exists"
         else
             if [ -f "$MOUNT_PATH/etc/ld.so.preload.original" ]; then
@@ -116,6 +117,7 @@ function enable_emulation(){
         fi
 
         if [ ! -f "$MOUNT_PATH/etc/fstab" ]; then
+            umount_input $MOUNT_PATH
             handle_error "File $MOUNT_PATH/etc/fstab does not exists"    
         else   
             if [ -f "$MOUNT_PATH/etc/fstab.original" ]; then
