@@ -38,7 +38,7 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-CURRENT_PATH="$(pwd "$0")"
+CURRENT_PATH="`pwd`"
 KERNEL_PATH="kernel-qemu-4.4.1-vexpress"
 DTB_PATH="vexpress-v2p-ca15_a7.dtb"
 
