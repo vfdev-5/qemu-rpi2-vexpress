@@ -60,9 +60,9 @@ Linux kernel used with QEMU is a build of [Linux 4.4.1](https://cdn.kernel.org/p
 $ cd linux-4.4.1
 $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- vexpress_defconfig
 $ cat >> .config << EOF
-    CONFIG_FHANDLE=y
-    CONFIG_LBDAF=y
-    EOF
+> CONFIG_FHANDLE=y
+> CONFIG_LBDAF=y
+> EOF
 $ make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- all
 ...
 $ cp arch/arm/boot/zImage ../kernel-qemu-4.4.1-vexpress
