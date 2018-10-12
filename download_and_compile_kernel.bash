@@ -3,12 +3,12 @@
 
 echo "Setup environment"
 
-# apt-get update && apt-get install -y qemu wget gcc-arm-linux-gnueabihf bc
+apt-get update && apt-get install -y qemu wget gcc-arm-linux-gnueabihf bc
 
 echo "Download linux 4.4.1"
 
-# wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.4.1.tar.xz
-# tar xvf linux-4.4.1.tar.xz
+wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.4.1.tar.xz
+tar xvf linux-4.4.1.tar.xz
 
 echo "Compile kernel"
 
