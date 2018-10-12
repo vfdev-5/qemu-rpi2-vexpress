@@ -70,7 +70,7 @@ $ cp arch/arm/boot/dts/vexpress-*.dtb ../
 
 ```
 
-
+See `download_and_compile_kernel.bash` for more details.
 
 
 
