@@ -29,6 +29,7 @@ function help(){
 }
 
 function handle_error() {
+    remove_mount_path $MOUNT_PATH
     echo "ERROR : $1"
     echo "!!! enable_emulation.bash exits with errors !!!"
     exit 1
@@ -75,7 +76,8 @@ function mount_input(){
 
         mkdir $MOUNT_PATH
         # image file :
-    	local _offset="$(sudo fdisk -l $_input_path | grep -o -i -P 'img2\s+[0-9]+[^0-9]' | sed -r -e 's/img2 +//g')"
+        local _offset="$(sudo fdisk -l $_input_path | grep -o -i -P $_input_path'2\s+[0-9]+[^0-9]' | sed -r -e 's/'${_input_path//\//\\/}'2 +//g')"
+        if [ "$_offset" == "" ]; then handle_error "Failed to find out the offset"; fi
         sudo mount -o loop,offset=$((512*$_offset)) $_input_path $MOUNT_PATH
         if [ "$?" != "0" ]; then handle_error "Failed to mount image file"; fi         
     fi

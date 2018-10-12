@@ -58,8 +58,8 @@ if [ -n "$1" ]; then
     else
         bash $CURRENT_PATH/tools/enable_emulation.bash $input_path 1 > /dev/null
     fi 
-    
-    
+    if [ "$?" != "0" ]; then handle_error "Failed to enable emulation"; fi
+
     # Redirect ^C, ^Z 
     stty intr ^k susp ^o
 
